@@ -1,6 +1,9 @@
 const express = require('express')
 const serverless = require('serverless-http')
 const task = require('./handler/task')
+const dotenv = require('dotenv')
+
+dotenv.config()
 
 const api = express()
 
