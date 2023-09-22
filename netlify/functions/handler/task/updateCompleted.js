@@ -10,30 +10,6 @@ module.exports = ({ db }) => {
     return async (req, res) => {
         const id = req.params?.id
 
-        const {
-            title,
-            description,
-            completed,
-        } = req.body
-
-        if (!title || typeof title !== 'string') {
-            return res.status(400).json({
-                error: 'title must be present and must be a string'
-            })
-        }
-
-        if (!description || typeof description !== 'string') {
-            return res.status(400).json({
-                error: 'description must be present and must be a string'
-            })
-        }
-
-        if (typeof completed !== 'boolean' && typeof completed !== 'undefined') {
-            return res.status(400).json({
-                error: 'completed must be boolean'
-            })
-        }
-
         let task
         try {
             task = await db.Task.findOne({ where: { id } })
@@ -47,9 +23,7 @@ module.exports = ({ db }) => {
 
         try {
             await db.Task.update({
-                title,
-                description,
-                completed,
+                completed: !task.completed,
             }, {
                 where: { id },
             })
