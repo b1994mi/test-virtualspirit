@@ -12,7 +12,7 @@ module.exports = ({ db }) => {
 
         let task
         try {
-            task = await db.Task.findOne({ id })
+            task = await db.Task.findOne({ where: { id } })
         } catch (error) {
             return res.status(422).json({ error })
         }
@@ -22,7 +22,7 @@ module.exports = ({ db }) => {
         }
 
         try {
-            await db.Task.destroy({ id })
+            await db.Task.destroy({ where: { id } })
         } catch (error) {
             return res.status(422).json({ error })
         }
