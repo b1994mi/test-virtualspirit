@@ -11,15 +11,29 @@ module.exports = ({ db }) => {
         const {
             title,
             description,
-            completed,
         } = req.body
+
+        if (!title || typeof title !== 'string') {
+            return res.status(400).json({
+                error: 'title must be present and must be a string'
+            })
+        }
+
+        if (!description || typeof description !== 'string') {
+            return res.status(400).json({
+                error: 'description must be present and must be a string'
+            })
+        }
 
         let task
         try {
             task = await db.Task.create({
                 title,
                 description,
-                completed
+                // it is assumed that in the requirement
+                // `completed` column is always false on create
+                // and can only be changed in update endpoint
+                completed: false,
             })
         } catch (error) {
             return res.status(422).json({ error })
