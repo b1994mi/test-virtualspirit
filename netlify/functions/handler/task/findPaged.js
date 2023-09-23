@@ -29,7 +29,7 @@ module.exports = ({ db }) => {
             order = [['updatedAt', 'DESC']]
         }
 
-        let tasks
+        let tasks, total
         try {
             const { limit, offset } = GetLimitOffset(page, size)
             tasks = await db.Task.findAll({
@@ -38,6 +38,8 @@ module.exports = ({ db }) => {
                 offset,
                 order,
             })
+
+            total = await db.Task.count({ where })
         } catch (error) {
             return res.status(422).json({ error })
         }
@@ -46,7 +48,7 @@ module.exports = ({ db }) => {
             data: tasks,
             page,
             size,
-            total: await db.Task.count({ where }),
+            total,
         })
     }
 }
