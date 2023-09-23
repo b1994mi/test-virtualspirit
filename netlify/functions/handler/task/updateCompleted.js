@@ -10,6 +10,12 @@ module.exports = ({ db }) => {
     return async (req, res) => {
         const id = req.params?.id
 
+        if (!parseInt(id)) {
+            return res.status(400).json({
+                error: 'id in URL path is not a number'
+            })
+        }
+
         let task
         try {
             task = await db.Task.findOne({ where: { id } })

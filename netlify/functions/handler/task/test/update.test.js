@@ -134,6 +134,29 @@ test('completed is not a boolean', async (t) => {
     }, "must contain exact same body for bad request")
 })
 
+test('id is not a number', async (t) => {
+    const mockDB = mock.newDB()
+    const mockRes = mock.newRes()
+
+    const mockReq = {
+        params: { id: 'asd' },
+        body: {
+            title: 'asd',
+            description: 'asd',
+            completed: "true",
+        }
+    }
+
+    const r = await update({
+        db: mockDB,
+    })(mockReq, mockRes)
+
+    assert.equal(r.statusCode, 400, 'status code is different')
+    assert.deepStrictEqual(r.body, {
+        error: 'id in URL path is not a number'
+    }, "must contain exact same body for bad request")
+})
+
 test('db.Task.findOne throws an exception', async (t) => {
     const mockDB = mock.newDB()
     const mockRes = mock.newRes()
