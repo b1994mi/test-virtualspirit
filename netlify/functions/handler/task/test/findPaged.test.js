@@ -38,3 +38,96 @@ test('ONLY FOR LOCAL TESTING', { skip: true }, async (t) => {
     const r = await findPaged({ db })(mockReq, mockRes)
     console.log(JSON.stringify(r))
 })
+
+test('valid query params are provided', async (t) => {
+    const mockDB = mock.newDB()
+    const mockRes = mock.newRes()
+
+    const page = 1, size = 2
+    const mockReq = {
+        params: { id: '2' },
+        query: {
+            page,
+            size,
+            completed: 'true',
+            sort: 'updated-desc',
+        }
+    }
+
+    const data = { id: '1' }, total = 1
+    mockDB.Task = {
+        findAll: () => (data),
+        count: () => total,
+    }
+
+    const r = await findPaged({
+        db: mockDB,
+    })(mockReq, mockRes)
+
+    assert.equal(r.statusCode, 200, 'status code is different')
+    assert.deepStrictEqual(r.body, {
+        data,
+        page,
+        size,
+        total,
+    }, "must contain exact same body for success")
+})
+
+test('no query param provided', async (t) => {
+    const mockDB = mock.newDB()
+    const mockRes = mock.newRes()
+
+    const mockReq = {
+        params: { id: '2' },
+        query: {}
+    }
+
+    const data = { id: '1' }, total = 1
+    mockDB.Task = {
+        findAll: () => (data),
+        count: () => total,
+    }
+
+    const r = await findPaged({
+        db: mockDB,
+    })(mockReq, mockRes)
+
+    assert.equal(r.statusCode, 200, 'status code is different')
+    assert.deepStrictEqual(r.body, {
+        data,
+        page: 0,
+        size: 0,
+        total,
+    }, "must contain exact same body for success")
+})
+
+test('db.Task.findAll throws an exception', async (t) => {
+    const mockDB = mock.newDB()
+    const mockRes = mock.newRes()
+
+    const page = 1, size = 2
+    const mockReq = {
+        params: { id: '2' },
+        query: {
+            page,
+            size,
+            completed: 'true',
+            sort: 'updated-desc',
+        }
+    }
+
+    const error = new Error('exceptionMsg')
+    mockDB.Task = {
+        findAll: () => (Promise.reject(error)),
+        count: () => total,
+    }
+
+    const r = await findPaged({
+        db: mockDB,
+    })(mockReq, mockRes)
+
+    assert.equal(r.statusCode, 422, 'status code is different')
+    assert.deepStrictEqual(r.body, {
+        error
+    }, "must contain exact same body unprocessable entity")
+})
