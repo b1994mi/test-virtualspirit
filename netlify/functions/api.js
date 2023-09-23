@@ -15,7 +15,7 @@ const api = express()
 api.use(bodyParser.json())
 api.use(bodyParser.urlencoded({ extended: true }))
 api.use(cors())
-app.use((req, res, next) => {
+api.use((req, res, next) => {
     res.status(404).json({ message: "Sorry can't find that!" })
 })
 
