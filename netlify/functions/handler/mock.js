@@ -1,12 +1,13 @@
 function newDB() {
     const mockDB = {
         sequelize: {
-            transaction: function () {
-                return {
-                    commit: function () { },
-                    rollback: function () { },
-                }
-            },
+            // NOTE: this can be used for mocking trx
+            // transaction: function () {
+            //     return {
+            //         commit: function () { },
+            //         rollback: function () { },
+            //     }
+            // },
         },
     }
 
