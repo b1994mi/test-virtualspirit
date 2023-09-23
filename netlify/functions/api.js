@@ -1,6 +1,7 @@
 const express = require('express')
 const serverless = require('serverless-http')
 const bodyParser = require('body-parser')
+const cors = require('cors')
 const task = require('./handler/task')
 const dotenv = require('dotenv')
 
@@ -13,6 +14,7 @@ const api = express()
 // register middlewares
 api.use(bodyParser.json())
 api.use(bodyParser.urlencoded({ extended: true }))
+api.use(cors())
 
 // register handlers
 const router = express.Router()
