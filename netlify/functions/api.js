@@ -15,9 +15,6 @@ const api = express()
 api.use(bodyParser.json())
 api.use(bodyParser.urlencoded({ extended: true }))
 api.use(cors())
-api.use((req, res, next) => {
-    res.status(404).json({ message: "Sorry can't find that!" })
-})
 
 // register handlers
 const router = express.Router()
@@ -25,6 +22,19 @@ router.use('/tasks', task)
 
 // register the routes
 api.use('/api/v1', router)
+
+// NOTE: according to express documentation, these special middleware
+// must be the last to be registered for handling page/route not found
+api.use((req, res, next) => {
+    res.status(404).json({ message: "Sorry can't find that!" })
+})
+
+// and for handling unexpected error
+api.use((err, req, res, next) => {
+    res.status(500).send({
+        error: 'Ooops, internal server error, my bad',
+    })
+})
 
 // export as a serverless function
 exports.handler = serverless(api)
